@@ -1,0 +1,8 @@
+[100.000] [INFO] [T01] [BOOT] System starting up.
+[100.100] [INFO] [T01] [KERNEL] Initializing memory manager.
+[100.250] [INFO] [T02] [RADIO] Powering on cellular modem.
+[100.300] [DEBUG] [T02] [RADIO] Handshake initiated.
+[103.500] [ERROR] [T02] [RADIO] Handshake timeout. Modem unresponsive.
+[103.550] [INFO] [T01] [KERNEL] Allocating buffers.
+[103.600] [FATAL] [T02] [RADIO] Kernel panic in radio module.
+[104.000] [INFO] [T03] [WIFI] WiFi module initialized.

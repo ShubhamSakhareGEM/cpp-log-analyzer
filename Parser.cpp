@@ -1,57 +1,52 @@
 #include "Parser.h"
-#include <fstream>
-#include <iostream>
 #include <sstream>
+#include <iostream>
+#include <stdexcept>
 
-LogEntry Parser::parseLine(const std::string& line) {
-    LogEntry entry;
-    //state machine
-    size_t pos=0;
-    std::vector<std::string> fields;
-    
-    for (int i=0; i< 4; ++i) {
-        size_t start =line.find('[', pos);
-        size_t end =line.find(']', start);
-        if (start!= std::string::npos && end!=std::string::npos) {
-            fields.push_back(line.substr(start + 1, end - start - 1));
-            pos= end + 1;
-        } else {
-            return entry; // if parsing fails, return empty entry
+bool Parser::parseLine(const std::string& line, LogEntry& entry) {
+    std::stringstream ss(line);
+    std::string timestampStr, threadId, level, module;
+
+
+    if (!(std::getline(ss, timestampStr, ']') &&
+          std::getline(ss, threadId, ']') &&
+          std::getline(ss, level, ']') &&
+          std::getline(ss, module, ']'))) {
+        return false;
+    }
+
+    try {
+        auto cleanField=[](std::string s) -> std::string {
+            size_t start=s.find_first_not_of(" [");
+            size_t end =s.find_last_not_of(" ");
+            if (start==std::string::npos) return "";
+            return s.substr(start, end - start + 1);
+        };
+
+        std::string cleanTimestamp= cleanField(timestampStr);
+        std::string cleanThreadId= cleanField(threadId);
+        std::string cleanLevel=cleanField(level);
+        std::string cleanModule=cleanField(module);
+
+        entry.timestamp = std::stod(cleanTimestamp);
+        if (entry.timestamp < 0) {
+            std::cerr << "Skipping line due to negative timestamp: " << line << "\n";
+            return false;
         }
-    }
+        entry.threadId = cleanThreadId;
+        entry.level = cleanLevel;
+        entry.module = cleanModule;
 
-    //assigning fiels
-    if (fields.size() == 4) {
-        entry.timestamp = std::stod(fields[0]);
-        entry.level = fields[1];
-        entry.threadId = fields[2];
-        entry.moduleName = fields[3];
-        
-        
-        size_t msgStart = line.find_first_not_of(" \t", pos);
-        if (msgStart != std::string::npos) {
-            entry.message = line.substr(msgStart);
-        }
-    }
-    return entry;
-}
+        std::string message;
+        std::getline(ss, message);
+        entry.message = cleanField(message);
 
-std::vector<LogEntry> Parser::parseFile(const std::string& filepath) {
-    std::vector<LogEntry> logs;
-    std::ifstream file(filepath);
-    
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open file " << filepath << std::endl;
-        return logs;
+        return true;
+    } catch (const std::invalid_argument&) {
+        std::cerr << "Skipping line due to invalid timestamp: " << line << "\n";
+        return false;
+    } catch (const std::out_of_range&) {
+        std::cerr << "Skipping line due to out-of-range timestamp: " << line << "\n";
+        return false;
     }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        if (line.empty()) continue;
-        LogEntry parsedEntry = parseLine(line);
-        if (!parsedEntry.level.empty()) {
-            logs.push_back(parsedEntry);
-        }
-    }
-    return logs;
 }

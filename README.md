@@ -32,7 +32,7 @@ I structured the project using Object-Oriented principles to ensure it is extens
 
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/cpp-log-analyzer.git](https://github.com/yourusername/cpp-log-analyzer.git)
+   git clone https://github.com/ShubhamSakhareGEM/cpp-log-analyzer.git
    ```
 
 2. Navigate into the directory:

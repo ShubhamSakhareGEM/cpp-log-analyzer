@@ -1,15 +1,18 @@
 # C++ Log Analyzer & Debug Trace Tool
 
 ## Overview
-I built this command-line Log Analyzer to efficiently parse, structure, and evaluate system-level hardware and software logs. When dealing with embedded systems, tracking down timing anomalies or repeated faults across various threads and modules is critical. I designed this tool to automate that process, providing quick diagnostic summaries directly in the terminal.
+I built this command-line Log Analyzer to efficiently parse, structure and evaluate system-level hardware and software logs. When dealing with embedded systems, tracking down timing anomalies or repeated faults across various threads and modules is critical. I designed this tool to automate that process, providing quick diagnostic summaries directly in the terminal.
 
 ## Key Features
-* **Custom File Parser:** I wrote a lightweight parser using standard C++ string manipulation to extract timestamps, thread IDs, module names, and error levels without relying on heavy external Regex libraries.
+* **Custom File Parser:** I wrote a lightweight parser using standard C++ string manipulation to extract timestamps, thread IDs, module names and error levels without relying on heavy external Regex libraries.
 * **Fault Aggregation:** The tool automatically isolates `ERROR` and `FATAL` log entries and groups them by the originating hardware/software module.
 * **Timing Anomaly Detection:** I implemented a tracking algorithm that calculates the delta between timestamps on a per-thread basis to detect system hangs, deadlocks, or delayed handshakes (e.g., flagging any thread gap larger than 1.5 seconds).
 
-## 📸 Terminal Output
-*(Below is a demonstration of the tool parsing a standard system log, identifying a kernel panic in the radio module, and flagging a 3.2-second handshake timeout.)*
+## Output
+
+![Log Analyzer Output](assets/log_file.png)
+
+*(Below is a demonstration of the tool parsing a standard system log, identifying a kernel panic in the radio module and flagging a 3.2-second handshake timeout.)*
 
 ![Log Analyzer Output](assets/terminal_output.png)
 

@@ -14,7 +14,6 @@ I built this command-line Log Analyzer to efficiently parse, structure and evalu
 
 *(Below is a demonstration of the tool parsing a standard system log, identifying a kernel panic in the radio module and flagging a 3.2-second handshake timeout.)*
 
-![Log Analyzer Output](assets/terminal_output.png)
 
 ## Technical Stack
 * **Language:** C++17
